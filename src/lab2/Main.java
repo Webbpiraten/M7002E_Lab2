@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.*;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -23,15 +23,14 @@ import com.jogamp.opengl.util.*;
 
 public class Main implements GLEventListener, MouseListener, KeyListener{
 
-
 	int count = 0;
 	private Point point = new Point();
 	private GLU glu;
-	Vector<Shapes> vec_shap = new Vector<Shapes>();
+	public static ArrayList<Shapes> arr_shap = new ArrayList<Shapes>();
 	float xcord = 0.0f;
 	float ycord = 0.0f;
-	int shape = 2;
-	boolean addShapes = true;
+	static int shape;
+	static boolean add = false;
 	Shapes s = null;
 	
 	public static void main(String[] args) {
@@ -63,12 +62,13 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 
 	public void render(GLAutoDrawable drawable){
 		GL2 gl = drawable.getGL().getGL2();
-//		GLUT glut = new GLUT();
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-	    Shapes s = new Shapes(xcord, ycord, shape);
-	    s.SelectShape(drawable);
-//	    Shapes s2 = new Shapes(1.0f, 1.0f, shape, drawable, glut);
-//	    Shapes s3 = new Shapes(-1.0f, -1.0f, shape, drawable, glut);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+		
+		if(arr_shap.size() != 0){
+			for(Shapes obj : arr_shap){
+				obj.SelectShape(drawable);
+			}
+		}
 	}
 	
 	public void init(GLAutoDrawable drawable) {
@@ -100,25 +100,23 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 	public void display(GLAutoDrawable drawable) {
 		update();
 //		GL2 gl = drawable.getGL().getGL2();
+//		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+//		GL2 gl = drawable.getGL().getGL2();
 //		select(gl);
-//		for(Shapes shap : vec_shap){ // for-each
-//			shap.SelectShape(drawable);
-//		}
+//		System.out.println(vec_shap.isEmpty());
+
+//		select(gl);
 		render(drawable);
 	}
 	
 	public void addShape(float x, float y){
-		System.out.println("Hej");
-		System.out.println("x: "+x+" y: "+y);
-//		Shapes shap = new Shapes(xcord, ycord, shape);
-		
-		s = new Shapes(1.0f, 1.0f, shape);
-		vec_shap.add(s);		
+		System.out.println(" x: "+x+" y: "+y+" shape: "+shape);
+		Shapes s = new Shapes(x, y, shape);
+		arr_shap.add(s);
 	}
 	
 	public void select(GL2 gl){
-	    System.out.println("Test");
-		
+
 		int[] SelBuf = new int[512];
 		IntBuffer SelBuffer = Buffers.newDirectIntBuffer(512);
 		int hits;
@@ -127,24 +125,28 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 		gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
 	    gl.glSelectBuffer(512, SelBuffer);
 	    gl.glRenderMode(GL2.GL_SELECT);
-
 	    gl.glInitNames();
 	    gl.glPushName(-1);
-
-	    gl.glMatrixMode(GL2.GL_PROJECTION);
 	    gl.glPushMatrix();
+	    gl.glMatrixMode(GL2.GL_PROJECTION);
 	    gl.glLoadIdentity();
-	    
 	    glu.gluPickMatrix((double) point.x, (double) (viewport[3] - point.y), 5.0, 5.0, viewport, 0);
-	    //gl.glOrtho(0.0, 8.0, 0.0, 8.0, -0.5, 2.5);
-	        
+	    gl.glOrtho(0.0f, 750, 0.0f, 750.0f, 0.1f, 1000.0f);
+	    
 	    gl.glPopMatrix();
 	    gl.glFlush();
 	    hits = gl.glRenderMode(GL2.GL_RENDER);
-	    
 	    SelBuffer.get(SelBuf);
 	    draw_sel(hits, SelBuf);
 
+	}
+	
+	public void DelAllObj(){
+		arr_shap.clear();
+	}
+	
+	public void DelObj(int index){
+		arr_shap.remove(index); // beror på picking
 	}
 	
 	public void draw_sel(int hits, int buffer[]){
@@ -186,6 +188,7 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 	
 	public void keyPressed(KeyEvent k) {
 		/*
+		 * A = adding
 		 * M = move
 		 * D = delete
 		 * A = delete all
@@ -204,7 +207,8 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 		if(id == KeyEvent.VK_D){
 			System.out.println("Delete");
 		}
-		if(id == KeyEvent.VK_A){
+		if(id == KeyEvent.VK_DELETE){
+			DelAllObj();
 			System.out.println("Delete All");
 		}
 		if(id == KeyEvent.VK_R){
@@ -226,25 +230,30 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 			shape = 3;
 			System.out.println("Cube");
 		}
+		if(id == KeyEvent.VK_A){
+			add = true;
+			System.out.println("Adding");
+		}
 		
 	}
 	
 	public void mousePressed(MouseEvent mouse) {
+		point = mouse.getPoint();
 		xcord = mouse.getX();
 		ycord = mouse.getY();
-		System.out.println(mouse.getPoint());
+//		System.out.println(mouse.getPoint());
 //		System.out.println("Xcord is: " + xcord);
 //		System.out.println("Ycord is: " + ycord);
+//		System.out.println("Pressed");
 	}
 
 	public void mouseReleased(MouseEvent mouse) {
 		float x = mouse.getX();
 		float y = mouse.getY();
-		if(addShapes){
+		if(add){
 			addShape(x, y);
-			//addShapes = false;
+			add = false;
 		}
-		
 	}
 	private void update() {}
 	public void dispose(GLAutoDrawable drawable) {}
@@ -255,5 +264,4 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 	public void keyTyped(KeyEvent arg0) {}
 
 }
-
 
