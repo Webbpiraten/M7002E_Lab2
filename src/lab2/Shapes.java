@@ -26,10 +26,12 @@ public class Shapes {
 		this.xcord = x;
 		this.ycord = y;
 		shape = shapes;
+//		System.out.println("Inuti shapes: x: "+x+" y: "+y+" shape: "+shape);
 	}
     
     public void SelectShape(GLAutoDrawable drawable){
     	int toDraw = shape;
+//    	System.out.println("SelectShape");
         switch (toDraw) {
             case 1:  Draw_Teapot(drawable, glut);
                      break;
@@ -37,7 +39,7 @@ public class Shapes {
                      break;
             case 3:  Draw_Cube(drawable, glut);
                      break;
-            default: System.out.println("Shape doesnt exist!");
+            default: ;//System.out.println("Shape doesnt exist!");
                      break;
         }
     }
@@ -86,5 +88,4 @@ public class Shapes {
 
     }
 }
-
 
