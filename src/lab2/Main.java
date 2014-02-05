@@ -26,12 +26,14 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 	int count = 0;
 	private Point point = new Point();
 	private GLU glu;
-	public static ArrayList<Shapes> arr_shap = new ArrayList<Shapes>();
+	public ArrayList<Shapes> arr_shap = new ArrayList<Shapes>();
 	float xcord = 0.0f;
 	float ycord = 0.0f;
-	static int shape;
-	static boolean add = false;
+	int shape;
+	boolean add = false;
+	boolean sel = false;
 	Shapes s = null;
+	int mode = 0;	// 0 = draw, 1 = select
 	
 	public static void main(String[] args) {
 		System.out.println("Herrroooo!");
@@ -43,6 +45,7 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 	    Frame frame = new Frame("Test");
 	    frame.setSize(750, 750);
 	    frame.add(canvas);
+	    frame.setResizable(false); // !!!!!!!!!
 	    frame.setVisible(true);
 	    
 	    frame.addWindowListener(new WindowAdapter() {
@@ -51,26 +54,15 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 	        }
 
 	    });
-	    canvas.addGLEventListener(new Main());
-	    canvas.addMouseListener(new Main());
-	    canvas.addKeyListener(new Main());
+	    Main m = new Main();
+	    canvas.addGLEventListener(m);
+	    canvas.addMouseListener(m);
+	    canvas.addKeyListener(m);
 	    Animator animator = new Animator(canvas);
 	    animator.start();
 		
 	}
 
-
-	public void render(GLAutoDrawable drawable){
-		GL2 gl = drawable.getGL().getGL2();
-		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-		
-		if(arr_shap.size() != 0){
-			for(Shapes obj : arr_shap){
-				obj.SelectShape(drawable);
-			}
-		}
-	}
-	
 	public void init(GLAutoDrawable drawable) {
 		drawable.getGL().setSwapInterval(1);
 		GL2 gl = drawable.getGL().getGL2();
@@ -97,17 +89,138 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
  
 	}
 	
-	public void display(GLAutoDrawable drawable) {
-		update();
-//		GL2 gl = drawable.getGL().getGL2();
-//		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-//		GL2 gl = drawable.getGL().getGL2();
-//		select(gl);
-//		System.out.println(vec_shap.isEmpty());
-
-//		select(gl);
-		render(drawable);
+	public void reshape(GLAutoDrawable drawable, int arg1, int arg2, int width, int height) {
+		GL2 gl = drawable.getGL().getGL2();;
+		GLU glu = new GLU();
+		if (height <= 0){ 
+				height = 1;
+			}
+		final float h = (float) width / (float) height;
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+        glu.gluPerspective(60, h, 0.1, 1000.0);
+        
+//        gl.glMatrixMode(GL2.GL_MODELVIEW);
+//        gl.glLoadIdentity();
+//        glu.gluLookAt(0.0f, 0.0f, 5.0f, 
+//        			  0.0f, 0.0f, 0.0f, 
+//        			  0.0f, 1.0f, 0.0f);
+        
+//        gl.glMatrixMode(GL2.GL_PROJECTION);
+//        gl.glLoadIdentity();
 	}
+
+	public void render(GLAutoDrawable drawable){
+		GL2 gl = drawable.getGL().getGL2();
+//		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+		if(arr_shap.size() != 0){
+			for(Shapes obj : arr_shap){
+				obj.SelectShape(drawable);
+			}
+		}
+	}
+	
+	public void display(GLAutoDrawable drawable) {
+//		update();
+		GL2 gl = drawable.getGL().getGL2();
+
+		switch(mode){	// 0 = draw, 1 = select
+		case 0:
+//			System.out.println("11111");
+			render(drawable);
+			break;
+		case 1:
+//			System.out.println("hErrroooo");
+//			int[] SelBuf = new int[512];
+//			IntBuffer SelBuffer = Buffers.newDirectIntBuffer(512);
+//			int hits;
+//			int viewport[] = new int[4];
+			float h = (float) 750 / (float) 750;
+//
+//			gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
+//		    gl.glSelectBuffer(512, SelBuffer);
+//		    gl.glRenderMode(GL2.GL_SELECT);
+//		    gl.glInitNames();
+////		    gl.glPushName(-1);
+//		    
+//		    gl.glMatrixMode(GL2.GL_PROJECTION);
+//		    gl.glPushMatrix();
+//		    gl.glLoadIdentity();
+//		    glu.gluPickMatrix((double) point.x, (double) (viewport[3] - point.y), 5.0, 5.0, viewport, 0);
+//		    glu.gluPerspective(60, h, 0.1, 1000.0);
+//		    System.out.println(" före render: "+mode);
+//		    render(drawable);
+//		    gl.glPopMatrix();
+//		    gl.glFlush();
+//		    hits = gl.glRenderMode(GL2.GL_RENDER);
+//		    SelBuffer.get(SelBuf);
+////		    draw_sel(hits, SelBuf);
+//		    mode = 0;
+//		    System.out.println(mode);
+	          int buffsize = 512;
+	          double x = (double) point.x, y = (double) point.y;
+	          int[] viewPort = new int[4];
+	          IntBuffer selectBuffer = Buffers.newDirectIntBuffer(buffsize);
+	          int hits = 0;
+	          gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
+	          gl.glSelectBuffer(buffsize, selectBuffer);
+	          
+	          gl.glRenderMode(GL2.GL_SELECT);
+	          gl.glInitNames();
+	          
+	          gl.glMatrixMode(GL2.GL_PROJECTION);
+//	          gl.glPushMatrix();
+	          gl.glLoadIdentity();
+	          
+	          glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
+	          glu.gluPerspective(60, h, 0.1, 1000.0);
+	          render(drawable);
+	          
+	          gl.glMatrixMode(GL2.GL_PROJECTION);
+	          gl.glPopMatrix();
+	          gl.glFlush();
+	          
+	          hits = gl.glRenderMode(GL2.GL_RENDER);
+	          processHits(hits, selectBuffer);
+	          mode = 0;
+			break;
+		}
+		
+	}
+	
+    public void processHits(int hits, IntBuffer buffer)
+    {
+      System.out.println("---------------------------------");
+      System.out.println(" HITS: " + hits);
+      int offset = 0;
+      int names;
+      float z1, z2;
+      for (int i=0;i<hits;i++)
+        {
+          System.out.println("- - - - - - - - - - - -");
+          System.out.println(" hit: " + (i + 1));
+          names = buffer.get(offset); offset++;
+          z1 = (float) (buffer.get(offset)& 0xffffffffL) / 0x7fffffff; offset++;
+          z2 = (float) (buffer.get(offset)& 0xffffffffL) / 0x7fffffff; offset++;
+          System.out.println(" number of names: " + names);
+          System.out.println(" z1: " + z1);
+          System.out.println(" z2: " + z2);
+          System.out.println(" names: ");
+
+          for (int j=0;j<names;j++)
+            {
+              System.out.print("       " + buffer.get(offset)); 
+              if (j==(names-1))
+                System.out.println("<-");
+              else
+                System.out.println();
+              offset++;
+            }
+          System.out.println("- - - - - - - - - - - -");
+        }
+      System.out.println("---------------------------------");
+    }
 	
 	public void addShape(float x, float y){
 		System.out.println(" x: "+x+" y: "+y+" shape: "+shape);
@@ -115,29 +228,7 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 		arr_shap.add(s);
 	}
 	
-	public void select(GL2 gl){
-
-		int[] SelBuf = new int[512];
-		IntBuffer SelBuffer = Buffers.newDirectIntBuffer(512);
-		int hits;
-		int viewport[] = new int[4];
-
-		gl.glGetIntegerv(GL2.GL_VIEWPORT, viewport, 0);
-	    gl.glSelectBuffer(512, SelBuffer);
-	    gl.glRenderMode(GL2.GL_SELECT);
-	    gl.glInitNames();
-	    gl.glPushName(-1);
-	    gl.glPushMatrix();
-	    gl.glMatrixMode(GL2.GL_PROJECTION);
-	    gl.glLoadIdentity();
-	    glu.gluPickMatrix((double) point.x, (double) (viewport[3] - point.y), 5.0, 5.0, viewport, 0);
-	    gl.glOrtho(0.0f, 750, 0.0f, 750.0f, 0.1f, 1000.0f);
-	    
-	    gl.glPopMatrix();
-	    gl.glFlush();
-	    hits = gl.glRenderMode(GL2.GL_RENDER);
-	    SelBuffer.get(SelBuf);
-	    draw_sel(hits, SelBuf);
+	public void select(GL2 gl, GLAutoDrawable drawable){
 
 	}
 	
@@ -168,24 +259,6 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 		
 	}
 
-	public void reshape(GLAutoDrawable drawable, int arg1, int arg2, int width, int height) {
-		GL2 gl = drawable.getGL().getGL2();;
-		GLU glu = new GLU();
-		if (height <= 0){ 
-				height = 1;
-			}
-		final float h = (float) width / (float) height;
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-        glu.gluPerspective(60, h, 0.1, 1000.0);
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-        glu.gluLookAt(0.0f, 0.0f, 5.0f, 
-        			  0.0f, 0.0f, 0.0f, 
-        			  0.0f, 1.0f, 0.0f);
-		
-	}
-	
 	public void keyPressed(KeyEvent k) {
 		/*
 		 * A = adding
@@ -234,6 +307,11 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 			add = true;
 			System.out.println("Adding");
 		}
+		if(id == KeyEvent.VK_S){
+//			mode = 1;
+			sel = true;
+			System.out.println("Selecting");
+		}
 		
 	}
 	
@@ -254,6 +332,10 @@ public class Main implements GLEventListener, MouseListener, KeyListener{
 			addShape(x, y);
 			add = false;
 		}
+		if(sel){
+			mode = 1;
+		}
+
 	}
 	private void update() {}
 	public void dispose(GLAutoDrawable drawable) {}
