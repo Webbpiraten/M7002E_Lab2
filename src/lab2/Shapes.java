@@ -49,8 +49,8 @@ public class Shapes {
     	final GL2 gl = drawable.getGL().getGL2();
 
     	gl.glPushMatrix();
-    	gl.glTranslatef(xcord, ycord, 0.0f);
     	gl.glRotatef(15.0f, 1.0f, 1.0f, 0.0f);
+    	gl.glTranslatef(xcord, ycord, 0.0f);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, no_mat, 0);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, mat_diffuse, 0);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, mat_specular, 0);
@@ -81,8 +81,8 @@ public class Shapes {
     	final GL2 gl = drawable.getGL().getGL2();
     	
     	gl.glPushMatrix();
-    	gl.glTranslatef(xcord, ycord, 0.0f);
     	gl.glRotatef(15.0f, 1.0f, 1.0f, 0.0f);
+    	gl.glTranslatef(xcord, ycord, 0.0f);
     	glut.glutSolidCube(0.5f);
     	gl.glPopMatrix();
 
