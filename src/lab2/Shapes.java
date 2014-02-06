@@ -19,13 +19,15 @@ public class Shapes {
     float mat_emission[] =  	{ 0.3f, 0.2f, 0.2f, 0.0f };
 	
 	float xcord,ycord;
+	int id;
 	int shape;
 	GLUT glut = new GLUT();
 	
-    Shapes(float x, float y, int shapes){
+    Shapes(float x, float y, int shapes, int id){
 		this.xcord = x;
 		this.ycord = y;
 		shape = shapes;
+		this.id = id;
 //		System.out.println("Inuti shapes: x: "+x+" y: "+y+" shape: "+shape);
 	}
     
@@ -56,8 +58,9 @@ public class Shapes {
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, mat_specular, 0);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, high_shininess, 0);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_EMISSION, mat_emission, 0);
-    	glut.glutSolidTeapot(0.5f);
+    	glut.glutSolidTeapot(0.1f);
     	gl.glPopMatrix();
+    	gl.glPushName(id);
     }
 
     public void Draw_Sphere(GLAutoDrawable drawable, GLUT glut){
@@ -71,9 +74,9 @@ public class Shapes {
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, mat_specular, 0);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, low_shininess, 0);
 //    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_EMISSION, no_mat, 0);
-    	glut.glutSolidSphere(0.25f, 200, 200);
+    	glut.glutSolidSphere(0.1f, 200, 200);
     	gl.glPopMatrix();
-
+    	gl.glPushName(id);
     }
 
     public void Draw_Cube(GLAutoDrawable drawable, GLUT glut){
@@ -83,9 +86,9 @@ public class Shapes {
     	gl.glPushMatrix();
     	gl.glRotatef(15.0f, 1.0f, 1.0f, 0.0f);
     	gl.glTranslatef(xcord, ycord, 0.0f);
-    	glut.glutSolidCube(0.5f);
+    	glut.glutSolidCube(0.1f);
     	gl.glPopMatrix();
-
+    	gl.glPushName(id);
     }
 }
 
