@@ -328,7 +328,12 @@ static class RenderShapes implements GLEventListener, MouseListener, KeyListener
     public void print(){
 		if(arr_shap.size() != 0){
 			for(Shapes obj : arr_shap){
-				System.out.println(obj.id + ", " + obj.radie + ", " + obj.shape + ", " + obj.xcord + ", " + obj.ycord + ", " + obj.mat_amb + ", " + obj.mat_diff + ", " + obj.mat_spec + ", " + obj.shininess + ", " + obj.mat_emission);
+				System.out.println(obj.id + ", " + obj.radie + ", " + obj.shape + ", " + obj.xcord + ", " + obj.ycord);
+				System.out.println(obj.mat_amb[0] + "," + obj.mat_amb[1] + "," + obj.mat_amb[2] + "," + obj.mat_amb[3]);
+				System.out.println(obj.mat_diff[0] + "," + obj.mat_diff[1] + "," + obj.mat_diff[2] + "," + obj.mat_diff[3]);
+				System.out.println(obj.mat_spec[0] + "," + obj.mat_spec[1] + "," + obj.mat_spec[2] + "," + obj.mat_spec[3]);
+				System.out.println(obj.shininess[0]);
+				System.out.println(obj.mat_emission[0] + "," + obj.mat_emission[1] + "," + obj.mat_emission[2] + "," + obj.mat_emission[3]);
 			}
 		}else{
 			System.out.println("These objects are not the shapes you're looking for...");
