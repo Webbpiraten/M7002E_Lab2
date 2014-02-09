@@ -3,6 +3,8 @@ M7002E_Lab2
 
 Lab2
 
+References can be found in the source code.
+
 The program works as follows:
 
 -----------------------------------
@@ -63,7 +65,19 @@ Shininess:100.0f
 
 Emission:0.3f,0.2f,0.2f,0.0f
 
+-----------------------------------
 
+Settings for Sphere:
+
+Ambient:0.0f,0.0f,0.0f,1.0f
+
+Diffuse:0.1f,0.5f,0.8f,1.0f
+
+Specularity:1.0f,1.0f,1.0f,1.0f
+
+Shininess:25.0f
+
+Emission:0.0f,0.0f,0.0f,1.0f
 
 
 
