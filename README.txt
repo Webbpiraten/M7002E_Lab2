@@ -5,6 +5,8 @@ Lab2
 
 The program works as follows:
 
+-----------------------------------
+
 Depending on the key you press, you enter different "modes":
 
 S: Selection, enables you to click on objects
@@ -25,6 +27,8 @@ P: Prints out the data structure
 
 Esc: Shutdown
 
+-----------------------------------
+
 When pressing one of the following keys, you choose what shape to add. 
 
 1: Teapot
@@ -32,6 +36,8 @@ When pressing one of the following keys, you choose what shape to add.
 2: Sphere
 
 3: Cube
+
+-----------------------------------
 
 Each added shape requires the user to specify different materials such as ambient, specularity etc...
 
@@ -42,6 +48,8 @@ ambient:1.0f,1.0f,1.0f,1.0f
 Diffuse:1.0f,1.0f,1.0f,1.0f
 
 Specularity:1.0f,1.0f,1.0f,1.0f
+
+-----------------------------------
 
 Settings for teapot:
 
